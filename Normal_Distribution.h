@@ -1,13 +1,9 @@
 /*
   File:         Normal_Distribution.h
-  Version:      0.0.1
+  Version:      0.0.2
   Date:         23-Jan-2019
-  Revision:     23-Jan-2019
+  Revision:     31-Jan-2019
   Author:       Jerome Drouin (jerome.p.drouin@gmail.com)
-
-  Editions:
-  - 0.0.1	: First version
-  - 0.0.2	: -
 
   Normal_Distribution.h - Library for 'duino
   https://github.com/newEndeavour/Normal_Distribution
@@ -28,6 +24,12 @@
  
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  Editions:
+  - 0.0.1	: First version
+  - 0.0.2	: Adding Mean, Variance, Kurtosis, Skewness, etc..
+		  Corrected CDF to support N(m,s) characterisations.
+		  Various Bug corrections.
 
 */
 
@@ -62,23 +64,28 @@ class Normal_Distribution
   // user-accessible "public" interface
   public:
   // methods
-	Normal_Distribution(float _Mu, float _Sigma);
+	Normal_Distribution(double _Mu, double _Sigma);
 	
-	float 	GetPDF(float x);
-	float 	GetPDF_2(float x);
-	float 	GetCDF(float x);
-	float 	GetQuantile(float p);
+	double 	GetPDF(double x);
+	double 	GetCDF(double x);
+	double 	GetQuantile(double p);
 
-	float 	GetMu(void);
-	float 	GetSigma(void);
+	double 	GetMean(void);
+	double 	GetVariance(void);
+	double 	GetStdDeviation(void);
+	double 	GetSkewness(void);
+	double 	GetKurtosis(void);
+
+	double 	GetMu(void);
+	double 	GetSigma(void);
 
   // library-accessible "private" interface
   private:
   // variables
 	int 	error;
 
-	float	Mu;			// 
-	float	Sigma;			// 
+	double	Mu;			// 
+	double	Sigma;			// 
 	
   // methods
 };

@@ -1,8 +1,8 @@
 /*
   File:         Normal_Distribution.cpp
-  Version:      0.0.1
+  Version:      0.0.2
   Date:         23-Jan-2019
-  Revision:     23-Jan-2019
+  Revision:     31-Jan-2019
   Author:       Jerome Drouin (jerome.p.drouin@gmail.com)
 
   Editions:	Please go to Normal_Distribution.h for Edition Notes.
@@ -37,11 +37,14 @@
 // Constructor /////////////////////////////////////////////////////////////////
 // Function that handles the creation and setup of instances
 
-Normal_Distribution::Normal_Distribution(float _Mu, float _Sigma)
+Normal_Distribution::Normal_Distribution(double _Mu, double _Sigma)
 {
 
 	// Object parameter's error handling
 	error = 1;
+
+	//Std deviation must be positive Real
+	if(_Sigma<=0) 	error	= -2; 
 
 	//Set initial values	
 	Mu			= _Mu;			// 
@@ -52,55 +55,166 @@ Normal_Distribution::Normal_Distribution(float _Mu, float _Sigma)
 
 // Public Methods //////////////////////////////////////////////////////////////
 //Probability Density Function
-float Normal_Distribution::GetPDF(float x)
+double Normal_Distribution::GetPDF(double x)
 {
+	//Error check
+	if (error<0) return error;
 
-    //return exp(-pow(x - Mu,2) / 2 * pow(Sigma,2)) / sqrt(2 * CONSTANT_Pi * pow(Sigma,2));
-    return exp(-pow(x,2) / 2) / sqrt(2 * CONSTANT_Pi);
+    	return exp(-pow(x - Mu,2) / 2 * pow(Sigma,2)) / sqrt(2 * CONSTANT_Pi * pow(Sigma,2));
 
 }
 
-//Density square
-float Normal_Distribution::GetPDF_2(float x)
-{
-
-    return -x * exp(-x * x / 2) / sqrt(2 * CONSTANT_Pi);
-
-}
 
 //Cumulative Distribution Function
-float Normal_Distribution::GetCDF(float x)
+double Normal_Distribution::GetCDF(double x)
 {
-float t;
-float y;
-float z;
+double t;
+double y;
+double z;
+double xx = (x - Mu)/Sigma;
 
-    if (abs(x) < 13) {
-        y = 1 / (1 + CONSTANT_aa * abs(x));
-        z = CONSTANT_b1 * pow(y,5) - CONSTANT_b2 * pow(y,4) + CONSTANT_b3 * pow(y,3) - CONSTANT_b4 * pow(y,2) + CONSTANT_b5 * y;
-        t = 1 - (z * exp(-x * x / 2) / sqrt(2 * CONSTANT_Pi));
-    } 
-    else {
-        t = 1;
-    }
+	//Error check
+	if (error<0) return error;
+
+	if (abs(xx) < 13) {
+        	y = 1 / (1 + CONSTANT_aa * abs(xx));
+        	z = CONSTANT_b1 * pow(y,5) - CONSTANT_b2 * pow(y,4) + CONSTANT_b3 * pow(y,3) - CONSTANT_b4 * pow(y,2) + CONSTANT_b5 * y;
+        	t = 1 - (z * exp(-xx * xx / 2) / sqrt(2 * CONSTANT_Pi));
+    	} 
+    	else {
+        	t = 1;
+    	}
             
-    if (x >= 0) {
-        return t;
-    } else {
-        return 1 - t;
-    }
+    	if (xx >= 0) {
+        	return t;
+    	} else {
+        	return 1 - t;
+    	}
+
 }
+
+
+//Mean
+double 	Normal_Distribution::GetMean(void)
+{
+	if (error<0)
+		return error;
+	
+	return Mu;
+
+}
+
+
+//Variance
+double 	Normal_Distribution::GetVariance(void)
+{
+	if (error<0)
+		return error;
+
+	return Sigma*Sigma;
+}
+
+
+//Std Deviation
+double 	Normal_Distribution::GetStdDeviation(void)
+{
+	if (error<0)
+		return error;
+
+	return Sigma;
+}
+
+
+//Skewness
+double 	Normal_Distribution::GetSkewness(void)
+{
+	if (error<0)
+		return error;
+	
+	return 0.0;
+
+}
+
+
+//Kurtosis
+double 	Normal_Distribution::GetKurtosis(void)
+{
+	if (error<0)
+		return error;
+
+	return 0.0;
+}
+
 
 
 //Return Quantile z(P) from probability P
-float Normal_Distribution::GetQuantile(float p)
+/*
+			
+		        * 
+		      *   *
+		     *     *
+		    *       *
+		   *         *
+		  *	      *
+		*       P       *
+       	  |   *  X e [-u.s;+u.s]  *   |
+          | *                       * | 
+* * * *   |			      |  * * * 
+----------+-------------+-------------+--------------------
+	-u.s		m	     +u.s
+
+
+z(P) = Normal_Distribution.GetQuantile(P);
+ID  P       z(P)
+0   0.68    1.000000000000
+1   0.80    1.281551565545
+2   0.90    1.644853626951  
+3   0.95    1.96963984540
+4   0.96    2.053749084..
+5   0.98    2.326347874041
+6   0.99    2.575829303549
+7   0.995   2.807033768344
+8   0.998   3.090232306168
+9   0.999   3.290526731492
+10  0.9999  3.890591886413
+
+
+		        * 
+		      *   *
+		     *     *
+		    *       *
+		   *         *
+		  *	      *
+		*       P       *
+       	      *  Xt e [-oo;+t.s]  *   |
+            *                       * | 
+* * * *    			      |  * * * 
+------------------------+-------------+--------------------
+-oo			m	     +t.s
+
+z(P) = Normal_Distribution.GetQuantile(P);
+ID  P       z(P)
+0   0.84    1.000000000000
+1   0.90    1.281551565545
+2   0.95    1.644853626951  
+3   0.975   1.96963984540
+4   0.980   2.053749084..
+5   0.99    2.326347874041
+6   0.995   2.575829303549
+7   0.9975  2.807033768344
+8   0.9990  3.090232306168
+9   0.9995  3.290526731492
+10  0.99995 3.890591886413
+
+*/
+double Normal_Distribution::GetQuantile(double p)
 {
-float Vm;
-float Vh = 16;
-float Vl = -16;
-float Pr;
+double Vm;
+double Vh = 16;
+double Vl = -16;
+double Pr;
 int i = 0;
-float Eps;
+double Eps;
 
 	if (p <= 0.0) {
 		return Vl;
@@ -156,13 +270,14 @@ float Eps;
 }
 
 
-float Normal_Distribution::GetMu(void)
+
+double Normal_Distribution::GetMu(void)
 {
 	return Mu;
 }
 
 
-float Normal_Distribution::GetSigma(void)
+double Normal_Distribution::GetSigma(void)
 {
 	return Sigma;
 }
