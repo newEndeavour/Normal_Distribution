@@ -1,6 +1,6 @@
 /*
   File:         Normal_Distribution.h
-  Version:      0.0.2
+  Version:      0.0.3
   Date:         23-Jan-2019
   Revision:     31-Jan-2019
   Author:       Jerome Drouin (jerome.p.drouin@gmail.com)
@@ -30,6 +30,7 @@
   - 0.0.2	: Adding Mean, Variance, Kurtosis, Skewness, etc..
 		  Corrected CDF to support N(m,s) characterisations.
 		  Various Bug corrections.
+  - 0.0.3	: Added Entropy.
 
 */
 
@@ -57,7 +58,7 @@
     
 //Number Pi
 #define CONSTANT_Pi 3.14159265358979
-
+#define CONSTANT_e  2.718281828459
 
 // library interface description
 class Normal_Distribution
@@ -76,6 +77,7 @@ class Normal_Distribution
 	double 	GetStdDeviation(void);
 	double 	GetSkewness(void);
 	double 	GetKurtosis(void);
+	double 	GetEntropy(void);
 
 	double 	GetMu(void);
 	double 	GetSigma(void);

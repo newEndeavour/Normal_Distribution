@@ -1,8 +1,8 @@
 /*
   File:         Normal_Distribution.cpp
-  Version:      0.0.2
+  Version:      0.0.3
   Date:         23-Jan-2019
-  Revision:     31-Jan-2019
+  Revision:     01-Feb-2019
   Author:       Jerome Drouin (jerome.p.drouin@gmail.com)
 
   Editions:	Please go to Normal_Distribution.h for Edition Notes.
@@ -143,6 +143,16 @@ double 	Normal_Distribution::GetKurtosis(void)
 		return error;
 
 	return 0.0;
+}
+
+
+//Entropy
+double 	Normal_Distribution::GetEntropy(void)
+{
+	if (error<0)
+		return error;
+
+	return 0.5*log(2.0*CONSTANT_Pi*CONSTANT_e*Sigma*Sigma);
 }
 
 
