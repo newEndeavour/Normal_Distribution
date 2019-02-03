@@ -31,6 +31,7 @@
 
 
 #include "Arduino.h"
+#include <math.h>              // required for erf() and M_SQRT1_2
 #include "Normal_Distribution.h"
 
 
@@ -57,11 +58,13 @@ Normal_Distribution::Normal_Distribution(double _Mu, double _Sigma)
 //Probability Density Function
 double Normal_Distribution::GetPDF(double x)
 {
+
 	//Error check
-	if (error<0) return error;
-
-    	return exp(-pow(x - Mu,2) / 2 * pow(Sigma,2)) / sqrt(2 * CONSTANT_Pi * pow(Sigma,2));
-
+	if (error<0) 
+		return error;
+	
+	return exp( -0.5 * pow((x - Mu)/Sigma,2) ) / (Sigma * sqrt(2.0 * CONSTANT_Pi));
+	
 }
 
 
@@ -74,7 +77,10 @@ double z;
 double xx = (x - Mu)/Sigma;
 
 	//Error check
-	if (error<0) return error;
+	if (error<0) 
+		return error;
+
+	//return  0.5 * ( 1.0 + erf( M_SQRT1_2 * xx ) );
 
 	if (abs(xx) < 13) {
         	y = 1 / (1 + CONSTANT_aa * abs(xx));
@@ -226,6 +232,9 @@ double Pr;
 int i = 0;
 double Eps;
 
+	if (error<0)
+		return error;
+
 	if (p <= 0.0) {
 		return Vl;
 	} else if (p >= 1.0) {
@@ -290,6 +299,25 @@ double Normal_Distribution::GetMu(void)
 double Normal_Distribution::GetSigma(void)
 {
 	return Sigma;
+}
+
+void Normal_Distribution::SetMu(double _Mu)
+{
+	//Set initial values	
+	Mu			= _Mu;			// 
+}
+
+
+void Normal_Distribution::SetSigma(double _Sigma)
+{
+	// Object parameter's error handling
+	error = 1;
+
+	//Std deviation must be positive Real
+	if(_Sigma<=0) 	error	= -2; 
+
+	//Set initial values	
+	Sigma			= _Sigma;		//
 }
 
 

@@ -82,6 +82,9 @@ class Normal_Distribution
 	double 	GetMu(void);
 	double 	GetSigma(void);
 
+	void 	SetMu(double _Mu);
+	void 	SetSigma(double _Sigma);
+
   // library-accessible "private" interface
   private:
   // variables
